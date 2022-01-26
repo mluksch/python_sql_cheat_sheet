@@ -34,7 +34,7 @@ cursor.execute("Delete from person")
 con.commit()
 
 print("****** Insert Rows *****************")
-# Insert rows:
+# Insert rows: Tuple Placeholder Style with "?"
 person_data = [("Max", 66), ("Sam", 24), ("Jerome", 33)]
 cursor.executemany("Insert into person(name, age) values (?,?)", person_data)
 
@@ -46,7 +46,7 @@ for id, name, age in results:
     print(f"({id}) Name: {name} is {age} years old.")
 
 print("****** update **************************")
-# update data:
+# update data: Named Placeholder Style with :key
 cursor.execute("update person set age=:age, name=:new_name where name=:old_name",
                {"old_name": "Max", "age": 19, "new_name": "Maxine"})
 
