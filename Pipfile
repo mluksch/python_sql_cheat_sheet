@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+sqlite3 = "pipenv run sqlite3_sheet.py"
+psycopg2 = "pipenv run psycopg2_sheet.py"
+sqlalchemy = "pipenv run sqlalchemy_sheet.py"
+
+[packages]
+psycopg2 = "*"
+pew = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
