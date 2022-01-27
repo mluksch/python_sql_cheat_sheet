@@ -11,6 +11,7 @@ sqlalchemy = "pipenv run sqlalchemy_sheet.py"
 [packages]
 psycopg2 = "*"
 pew = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
