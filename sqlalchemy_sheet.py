@@ -140,3 +140,51 @@ with engine.connect() as con:
 # (for example: for insert/update/deletes
 # create a connection for a transaction and
 # close connection afterwards
+
+
+### Difference between:
+# (1) connect()
+print("******* engine.connect() has no implicit auto-commit() ******")
+with engine.connect() as con:
+    con.execute(sqlalchemy.text("Insert into person (name, age) values (:name, :age)"), {
+        "name": "Rogue",
+        "age": 22
+    })
+    # con.commit()
+    # will not auto-commit, when leaving scope
+    # connection will just get closed()
+
+# (2) begin()
+print("****** engine.begin() has implicit auto-commit() *****")
+with engine.begin() as con:
+    con.execute(sqlalchemy.text("Insert into person (name, age) values (:name, :age)"), {
+        "name": "Magneto",
+        "age": 22
+    })
+    # will auto-commit, when leaving scope
+    # connection will just get closed()
+
+print_table(engine, "person")
+
+# a connection can be used to begin a transaction:
+with engine.connect() as con:
+    with con.begin() as transaction:
+        # placeholder for DB-Mutations:
+        pass
+        # Rollback DB-Mutations &
+        # Close Transaction
+        transaction.rollback()
+        # placeholder for DB-Mutations:
+    with con.begin() as transaction:
+        # placeholder for DB-Mutations:
+        pass
+        # Explicit Commit is not required here but
+        # explicit Commit will close Transaction
+        transaction.commit()
+    with con.begin() as transaction:
+        # placeholder for DB-Mutations:
+        pass
+        # any raised exception will
+        # also rollback DB-Mutations &
+        # Close Transaction
+        raise Exception()
