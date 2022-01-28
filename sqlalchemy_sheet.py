@@ -112,3 +112,31 @@ with engine.begin() as con:
 # without connection.commit()
 # Transaction will get rollbacked
 print_table(engine, "person")
+
+# For Read-Operations you do not need Transaction of course:
+with engine.connect() as con:
+    res = con.execute(sqlalchemy.text("Select * from person"))
+    # Row-Operations in SqlAlchemy 2.x:
+    # scalars: Select columns on execution results
+    # all: returns a list similar to fetchall()
+    names = res.scalars("name").all()
+    print(f"All names in Person-Table: {', '.join(names)}")
+
+# close() on connection will release connection
+# to the connection pool of the engine
+con = engine.connect()
+con.close()
+
+# but normally explicitly calling con.close() is not required
+# because connection is created within a context:
+with engine.connect() as con:
+    pass
+    # implicitly con.close() when leaving the block here
+
+###### How use Connections & Engine ################
+# Engine should be global in SQLAlchemy
+# Connection should be local, i.e.:
+# each time created
+# (for example: for insert/update/deletes
+# create a connection for a transaction and
+# close connection afterwards
