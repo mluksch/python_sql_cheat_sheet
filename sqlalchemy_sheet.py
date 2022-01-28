@@ -5,6 +5,8 @@ import sqlalchemy
 
 from utils import print_table
 
+# SQLAlchemy is a wrapper/abstraction for unifying underlying DBAPIs
+
 ################  Video-Tutorials  ################
 # https://www.youtube.com/watch?v=1Va493SMTcY&ab_channel=SixFeetUp
 
