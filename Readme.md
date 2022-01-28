@@ -4,12 +4,12 @@
 
 ```
 # sqlite3-Script:
-pipenv run sqlite3 
+pipenv run sqlite 
 ```
 
 ```
 # psycopg-Script:
-pipenv run psycopg2 
+pipenv run postgres 
 ```
 
 ```

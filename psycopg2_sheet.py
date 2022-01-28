@@ -4,6 +4,9 @@ import os
 
 import psycopg2
 
+# psycopg3 is in the works with asyncio:
+# https://www.psycopg.org/psycopg3/docs/basic/install.html
+
 # create a connection
 # transaction is started by default:
 con = psycopg2.connect(os.getenv("POSTGRES_URL"))
@@ -17,6 +20,10 @@ cursor.execute("Create table if not exists pets(id serial primary key, name text
 
 # Delete rows:
 cursor.execute("Delete from pets")
+
+# Explicit con.commit() is required here to commit
+# auto-begin() transaction
+# otherwise changes will not be reflected in DB
 con.commit()
 
 print("****** Insert Rows *****************")
@@ -42,6 +49,7 @@ print("******** select **************************")
 for id, name, species, age in results:
     print(f"({id}) Species: {species},  Name: {name}, age: {age}")
 
-# commit transaction:
+# Explicit con.commit() is required here to commit
+# auto-begin() transaction
 con.commit()
 con.close()

@@ -22,6 +22,8 @@ import sqlite3
 # create a connection
 # transaction is started by default:
 con = sqlite3.connect("test.db")
+# Most DBAPIs have a transaction ongoing which is auto-begin() on connect()
+# which will begin a transaction implicitly
 
 # create a cursor for executing sql stmts:
 cursor = con.cursor()

@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-sqlite3 = "pipenv run sqlite3_sheet.py"
-psycopg2 = "pipenv run psycopg2_sheet.py"
+sqlite = "pipenv run sqlite3_sheet.py"
+postgres = "pipenv run psycopg2_sheet.py"
 sqlalchemy = "pipenv run sqlalchemy_sheet.py"
 
 [packages]
