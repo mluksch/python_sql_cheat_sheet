@@ -71,12 +71,19 @@ for tupled in [hugo, boss]:
 
 # Access column data of a row by:
 # (1) object-property: row.property
-# Will get eprecated in SQL(2a) tuple-index: row[index]
+# !!! Will get deprecated in SQL(2a) tuple-index: row[index] !!!
 # (2b) tuple destructuring: id, name, age = row
 # (3) dict-key: row["key"]
 print(f"row: {row}, id: {row.id}, name: {row[1]}, age: {row['age']}")
 
 # SqlAlchemy Row results are Named Tuples!
+
+# Edge cases: assuming you get a row ("Sandy", 44) from Person-Table
+# you can do:
+# "sandy" in row will return True
+# because row is a NamedTuple. But:
+# "name" in row will return False
+# because row is NOT a Dictionary anymore in SqlAlchemy Version>2.0
 
 
 # Returns connection to the engine's connection pool:
