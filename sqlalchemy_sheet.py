@@ -53,7 +53,7 @@ print(f"row: {row}, id: {row.id}, name: {row[1]}, age: {row['age']}")
 con.close()
 
 # Use Python's Context-Manager for resources:
-print("*********** DML: con.connect + con.commit(): No Rollback  **************")
+print("**** DML: con.connect + con.commit(): Explicit Commit required otherwise implicit Rollback  **************")
 with engine.connect() as con:
     # The transaction is not committed automatically; when we want to commit data we normally
     # need to call Connection.commit() as we’ll see in the next section
@@ -62,13 +62,13 @@ with engine.connect() as con:
     con.commit()
 print_table(engine, "person")
 
-print("******** DML: con.connect() w/o con.commit(): Rollback expected  *************** ")
+print("**** DML: con.connect() w/o con.commit(): Implicit Rollback if con.commit() is missing  *************** ")
 with engine.connect() as con:
     res = con.execute(sqlalchemy.text("insert into person(name, age) values (:name, :age)"),
                       {"name": "Cyclops", "age": 33})
 print_table(engine, "person")
 
-print("******** DML: con.begin() with implicit con.commit(): No Rollback  *************** ")
+print("**** DML: con.begin() with implicit con.commit(): No implicit Rollback *************** ")
 with engine.begin() as con:
     res = con.execute(sqlalchemy.text("insert into person(name, age) values (:name, :age)"),
                       {"name": "Professor X", "age": 83})

@@ -60,4 +60,13 @@ for id, name, age in results:
 
 # commit transaction:
 con.commit()
+
+# DBAPIs doesnt know of any con.begin()
+# because transaction is begun by default
+# on con.connect()
+
+# But every DBAPI has:
+# con.commit() + con.rollback()
+con.rollback()
+
 con.close()
