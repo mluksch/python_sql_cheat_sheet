@@ -19,12 +19,16 @@ from utils import print_table
 # echo: log sql statements
 # engine = sqlalchemy.create_engine("sqlite:///test.db", echo=True, future=True)
 # In-memory-Database
+# "Future" means sqlalchemy version 2
 engine = sqlalchemy.create_engine("sqlite+pysqlite:///:memory:", echo=False, future=True)
 
 ############# TRANSACTION ##########################
 # Docs: https://docs.sqlalchemy.org/en/14/tutorial/dbapi_transactions.html
 # get a SqlAlchemy-Proxy to a connection from the engine's connection pool:
 con = engine.connect()
+
+# No cursors like in DBAPIs anymore in SQLAlchemy
+# Execute Statements directly on the Connection:
 con.execute(sqlalchemy.text("Create table person(id integer primary key autoincrement, name text, age integer)"))
 con.execute(sqlalchemy.text("Insert into person (name) values (:name)"), {"name": "Maxine"})
 
@@ -44,14 +48,36 @@ row = res.fetchone()
 # res.fetchall() for multiple rows
 print(f"row: {row}")
 
-# Row is a tuple, dict, object of a class
+# A returned Row is a "Named Tuple" in Python:
+# https://stackoverflow.com/questions/2970608/what-are-named-tuples-in-python
+# Named tuple instances can be referenced using:
+# - object-like variable dereferencing (object.property) or
+# - standard tuple syntax (tuple[1])
+from collections import namedtuple
+
+TuplePerson = namedtuple('TuplePerson', ['name', 'age'])
+hugo = TuplePerson("Hugo", 41)
+boss = TuplePerson("Boss", 15)
+for tupled in [hugo, boss]:
+    print(f"TuplePerson {tupled.name} is {tupled[1]} years old")
+
+##### USE CASES for NAMED TUPLES #######
+# (1) you should use named tuples instead of tuples anywhere
+# you think object notation will make your code more
+# pythonic and more easily readable
+# (2) you can also replace ordinary
+# immutable classes that have no functions, only fields with them
+# (3) However, as with tuples, attributes in named tuples are immutable:
 
 # Access column data of a row by:
 # (1) object-property: row.property
-# (2a) tuple-index: row[index]
+# Will get eprecated in SQL(2a) tuple-index: row[index]
 # (2b) tuple destructuring: id, name, age = row
 # (3) dict-key: row["key"]
 print(f"row: {row}, id: {row.id}, name: {row[1]}, age: {row['age']}")
+
+# SqlAlchemy Row results are Named Tuples!
+
 
 # Returns connection to the engine's connection pool:
 con.close()
