@@ -104,3 +104,10 @@ print(f"* Update-Statement sql_stmt: {sql_stmt}")
 with engine.begin() as con:
     con.execute(sql_stmt)
 utils.print_table(engine, "user")
+
+# (4) Delete
+sql_stmt = user_table.delete().where(user_table.c.id.in_(range(1, 10)))
+print(f"* Delete-Statement sql_stmt: {sql_stmt}")
+with engine.begin() as con:
+    con.execute(sql_stmt)
+utils.print_table(engine, "user")
