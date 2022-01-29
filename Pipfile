@@ -8,6 +8,7 @@ sqlite = "pipenv run 00_sqlite3_driver.py"
 postgres = "pipenv run 00_psycopg2_driver.py"
 sqlalchemy1 = "pipenv run 01_sqlalchemy_transaction.py"
 sqlalchemy2 = "pipenv run 02_sqlalchemy_metadata.py"
+sqlalchemy3 = "03_sqlalchemy_expression_language.py"
 
 [packages]
 psycopg2 = "*"

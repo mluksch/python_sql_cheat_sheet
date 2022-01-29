@@ -93,3 +93,75 @@ print(f"""
 * Table infos in Metadata: 
 metadata2.tables[\"species\"] = {pprint.pformat(metadata.tables['species'])[0:100] + '...'}
 """)
+
+# When is Reflection used?
+# When you have an existing DB and for Migration
+
+# (IV) Mapping SqlAlchemy-Types to SQL-Types
+table_visitors = sqlalchemy.Table(
+    "visitor",
+    metadata,
+    # Columns with different SqlAlchemy-DataTypes
+    sqlalchemy.Column(
+        "name",
+        # Maps to SQL-Type: VARCHAR
+        sqlalchemy.String(),
+        primary_key=True),
+    sqlalchemy.Column("age",
+                      # Maps to SQL-Type: INT
+                      sqlalchemy.Integer()),
+    sqlalchemy.Column("interview",
+                      # Rather use String! Maps to SQL-Type: VARCHAR, NVARCHAR
+                      sqlalchemy.Unicode()),
+    sqlalchemy.Column("is_adult",
+                      # Maps to SQL-Type: BOOLEAN (not supported by every DBs), INT, BIT
+                      sqlalchemy.Boolean()
+                      ),
+    sqlalchemy.Column("job",
+                      # Maps to SQL-Type: VARCHAR (most DB doesnt have an Enum-Type)
+                      sqlalchemy.Enum(
+                          "SOFTWARE_DEVELOPER", "IT_ARCHITECT", "PROJECT_MANAGER"
+                      )),
+    sqlalchemy.Column("visit_date",
+                      # Maps to SQL-Type: TIMESTAMP, Maps to Python Datetime
+                      sqlalchemy.DateTime()),
+    sqlalchemy.Column("account_balance",
+                      # Maps to SQL-Type: BIGINT
+                      sqlalchemy.BigInteger()),
+    sqlalchemy.Column("account_balance",
+                      # Maps to SQL-Type: DATE, Maps to Python: Date
+                      sqlalchemy.Date()),
+    sqlalchemy.Column("profile_file",
+                      # Maps to SQL-Type: BLOB
+                      sqlalchemy.BLOB),
+    sqlalchemy.Column("weight",
+                      # Maps to SQL-Type: precision numerics, Maps to Python: Decimal()
+                      sqlalchemy.DECIMAL),
+    sqlalchemy.Column("height",
+                      # Maps to SQL-Type: FLOAT, Maps to Python: float
+                      sqlalchemy.Float()),
+    sqlalchemy.Column("json_dump",
+                      # Maps to SQL-Type: JSON. Supported by Postgresql, MySql, SQLite
+                      sqlalchemy.JSON())
+)
+
+with engine.begin() as con:
+    # Delete single Tables:
+    print(f"* Delete single Tables: species_table.drop(con)")
+    # checkFirst=True (default) will check, if table exists and abort
+    # checkFirst=False will not check before dropping
+    # and throw Exception "no such table", if table does not exist
+    species_table.drop(con, checkfirst=False)
+    animal_table.drop(con, checkfirst=False)
+    # Delete all Tables:
+    print(f"* Delete all Tables: metadata.drop_all(con)")
+    metadata.drop_all(con, checkfirst=True)
+    # Create all Tables:
+    print(f"* Create all Tables: metadata.create_all(con)")
+    metadata.create_all(con, checkfirst=True)
+
+utils.print_table(engine, 'species')
+utils.print_table(engine, 'animal')
+utils.print_table(engine, 'visitor')
+
+print(f"* Table visitor Created: {pprint.pformat(metadata.tables['visitor'])[0:100] + '...'}")
