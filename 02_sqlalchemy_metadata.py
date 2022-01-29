@@ -41,7 +41,7 @@ print(f"* Table-Objects stored in Metadata: {', '.join(metadata.tables.keys())}"
 
 # (II) Create all Tables from Metadata:
 print(f"* Create Tables from Metadata: metadata.create_all(connection)")
-engine = sqlalchemy.create_engine("sqlite:///metadata.db", echo=True, future=True)
+engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=False, future=True)
 with engine.begin() as con:
     # creates all tables from metadata:
     metadata.create_all(con)
@@ -51,13 +51,13 @@ with engine.begin() as con:
     df_species.to_sql("species", con=con,
                       # 'replace' for dropping table, if exists
                       # 'append' otherwise
-                      if_exists='replace',
+                      if_exists='append',
                       # ignore DataFrame-index:
                       index=False)
     df_animal.to_sql("animal", con=con,
                      # 'replace' for dropping table, if exists
                      # 'append' otherwise
-                     if_exists='replace',
+                     if_exists='append',
                      # ignore DataFrame-index:
                      index=False)
 
