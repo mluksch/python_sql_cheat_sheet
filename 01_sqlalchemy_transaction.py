@@ -15,11 +15,15 @@ from utils import print_table
 ############## Engine ############################
 # create an engine: Initialize with DB-Url
 # Docs: https://docs.sqlalchemy.org/en/14/tutorial/engine.html
-# <sql_dialect>://<username>:<password>@<host>:<port>/<db_name>
+# <sql_dialect>+<DBAPI-driver>://<username>:<password>@<host>:<port>/<db_name>
 # echo: log sql statements
 # engine = sqlalchemy.create_engine("sqlite:///test.db", echo=True, future=True)
 # In-memory-Database
 # "Future" means sqlalchemy version 2
+print(
+    f"""* Creating Engine by DB-Url-Schema: 
+<sql_dialect>+<DBAPI-driver>://<username>:<password>@<host>:<port>/<db_name>
+""")
 engine = sqlalchemy.create_engine("sqlite+pysqlite:///:memory:", echo=False, future=True)
 
 ############# TRANSACTION ##########################

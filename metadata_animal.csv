@@ -1,0 +1,7 @@
+id,gender,name,species,birthday,price
+11,male,Clarence,Lion,1999-01-01T12:07:38.327582,22000.35
+21,female,Kitty,Cat,2009-12-04T15:07:38.327582,220.14
+31,male,Nemo,Fish,2019-12-11T22:07:38.327582,22.45
+41,female,Bello,Dog,2021-11-09T19:11:11.327582,333.42
+51,male,Max,Human,2011-11-09T19:11:11.327582,null
+61,female,Grillo,Monkey,2002-01-09T10:15:22.327111,9999.99

@@ -1,3 +1,6 @@
 .idea
 *.db
 .env
+*.csv
+!metadata_animal.csv
+!metadata_species.csv

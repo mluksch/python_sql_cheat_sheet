@@ -15,6 +15,12 @@
 # .mode csv             # set output mode
 # .headers on           # display column headers
 # .output FILE          # send output to file
+# Select * from person  # select rows for output
+
+## csv import:
+# .mode csv             # set output mode
+# .headers on           # display column headers
+# .import FILE TABLE --skip 1   # import rows from csv into table (skip 1 header row in csv)
 
 # sqlite3 lib is by default included
 import sqlite3
