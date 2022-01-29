@@ -1,3 +1,5 @@
+import pprint
+
 import pandas as pd
 import sqlalchemy
 
@@ -14,6 +16,7 @@ import utils
 # (5) can be read by Migration Tools (Sql Alembic)
 
 # (I) Adding Table-Objects to Metadata:
+print("(I) Adding Table-Objects to Metadata")
 metadata = sqlalchemy.MetaData()
 species_table = sqlalchemy.Table(
     "species",
@@ -40,6 +43,7 @@ print(f"* Table-Object animal with columns: {species_table.c}")
 print(f"* Table-Objects stored in Metadata: {', '.join(metadata.tables.keys())}")
 
 # (II) Create all Tables from Metadata:
+print("(II) Create all Tables from Metadata")
 print(f"* Create Tables from Metadata: metadata.create_all(connection)")
 engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=False, future=True)
 with engine.begin() as con:
@@ -63,3 +67,29 @@ with engine.begin() as con:
 
 utils.print_table(engine, "species")
 utils.print_table(engine, "animal")
+
+# (III) Reflection: Create Metadata from existing Tables in a DB
+print("(III) Reflection: Create Metadata from existing Tables in a DB")
+metadata2 = sqlalchemy.MetaData()
+with engine.connect() as con:
+    # add existing tables in the Database to metadata-collection:
+    print(f"sqlalchemy.Table(\"animal\", metadata2, autoload_with=con)")
+    animal_table2 = sqlalchemy.Table("animal", metadata2, autoload_with=con)
+    species_table2 = sqlalchemy.Table("species", metadata2, autoload_with=con)
+
+# Utility: Using Inspector to get table infos from existing Tables in a DB
+inspector = sqlalchemy.inspect(engine)
+# columns_info = inspector.get_columns("<table_name>")
+col_infos = inspector.get_columns("animal")
+print(
+    f"""
+* Inspector for extracting Table infos from DB: 
+inspector.get_columns(\"animal\") = {pprint.pformat(col_infos)[0:100] + '...'}
+""")
+
+# Getting Table information from Metadata:
+table_info = metadata2.tables["species"]
+print(f"""
+* Table infos in Metadata: 
+metadata2.tables[\"species\"] = {pprint.pformat(metadata.tables['species'])[0:100] + '...'}
+""")
