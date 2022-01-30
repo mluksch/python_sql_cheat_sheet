@@ -120,7 +120,9 @@ table_visitors = sqlalchemy.Table(
     sqlalchemy.Column("job",
                       # Maps to SQL-Type: VARCHAR (most DB doesnt have an Enum-Type)
                       sqlalchemy.Enum(
-                          "SOFTWARE_DEVELOPER", "IT_ARCHITECT", "PROJECT_MANAGER"
+                          "SOFTWARE_DEVELOPER", "IT_ARCHITECT", "PROJECT_MANAGER",
+                          # !! For Postgres "name" is required for Enums:
+                          name="job_type"
                       )),
     sqlalchemy.Column("visit_date",
                       # Maps to SQL-Type: TIMESTAMP, Maps to Python Datetime
