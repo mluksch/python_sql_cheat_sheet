@@ -45,7 +45,7 @@ utils.print_table(engine, table_name="species")
 # (1) Join-clause
 # (1.a) Outer Join
 with engine.connect() as con:
-    db_stmt = sqlalchemy.select([animal_table]).outerjoin(species_table)
+    db_stmt = sqlalchemy.select([animal_table, species_table]).outerjoin(species_table)
     print(f"stmt: {db_stmt}")
     rows = con.execute(db_stmt).fetchall()
     print(f"rows: {pprint.pformat(rows)}")
