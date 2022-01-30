@@ -13,3 +13,11 @@ def print_table(engine, table_name: str):
         df = pd.DataFrame.from_records(rows, columns=columns)
         print(f"************ Table {table_name} ************".upper())
         print(df)
+
+
+def execute_stmt(engine, stmt):
+    with engine.connect() as con:
+        print(f"*** stmt: {stmt}")
+        rows = con.execute(stmt).fetchall()
+        df = pd.DataFrame.from_records(rows)
+        print(df)

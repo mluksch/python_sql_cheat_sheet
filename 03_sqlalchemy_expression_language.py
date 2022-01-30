@@ -65,7 +65,8 @@ sql_stmt = select_clause.order_by(user_table.c.age).where(where_clause)
 print(f"* Read-Query sql_stmt: {sql_stmt}")
 with engine.connect() as con:
     row = con.execute(sql_stmt).fetchone()
-    print(f"* sql_stmt result: {row}")
+    print(
+        f"* sql_stmt result sthg like namedtuples: row.first_name {row.first_name},row.last_name {row.last_name}, row.age {row.age}")
 
 # (2.a) Insert with a dict:
 sql_stmt = user_table.insert()
