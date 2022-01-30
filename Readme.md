@@ -16,4 +16,5 @@ pipenv run postgres
 # sqlite3-Script:
 pipenv run sqlalchemy1
 pipenv run sqlalchemy2
+pipenv run sqlalchemy3
 ```

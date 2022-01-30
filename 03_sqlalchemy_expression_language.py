@@ -98,7 +98,9 @@ with engine.begin() as con:
 utils.print_table(engine, "user")
 
 # (3.b) update with a named parameters:
-sql_stmt = user_table.update().where(user_table.c.last_name == "Tennis").values(first_name="Boris", age=44)
+# sql_stmt = user_table.update().where(user_table.c.last_name == "Tennis").values(first_name="Boris", age=44)
+# switching order of "where" and "values" doesnt matter here:
+# both work
 sql_stmt = user_table.update().values(first_name="Gerd", age=44).where(user_table.c.last_name == "Nerd")
 print(f"* Update-Statement sql_stmt: {sql_stmt}")
 with engine.begin() as con:
