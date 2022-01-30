@@ -104,14 +104,14 @@ utils.execute_stmt(engine, stmt)
 # 1  Fish  Swims in the water  Fish  Fish flambee  19.00
 
 
-# Alias in SQLAlchemy
+# (2) Alias in SQLAlchemy
 # my_table_alias = table.alias()
 # If a table is referenced multiple times in a Query, use an alias:
 species_table_alias_1 = species_table.alias()
 animal_table_alias_1 = animal_table.alias()
 menu_table_alias_1 = menu_table.alias()
 
-# Table-Self-Join:
+# (3) Table-Self-Join:
 # select([<table>, <table_alias>]).join(<table_alias>, <on-clause>)
 print(f"- Self-Join: 'select([<table>, <table_alias>]).join(<table_alias>, <on-clause>)'")
 # Example: Double Menu combinations for 2-Menu-combinations of the same animal
@@ -122,10 +122,22 @@ double_menu_if_same_animal_stmt = \
                                                              menu_table.c.animal == menu_table_alias_1.c.animal)
 utils.execute_stmt(engine, double_menu_if_same_animal_stmt)
 
-# Sub-Selects:
+# (4) Sub-Selects:
+# Basically using Select-Statements as "Tables" for other Select-Statements
 # select(...).select_from(<select-Stmt>)
-print(f"- Sub-Select: 'select(...).select_from(<select-Stmt>)'")
-subselect_stmt = sqlalchemy.select([menu_table, menu_table_alias_1]).select_from(
-    double_menu_if_same_animal_stmt
-)
+print(f"- Sub-Select: 'my_subquery = <Stmt>.subquery()'")
+subquery = double_menu_if_same_animal_stmt.subquery()
+# alternative syntax using an alias:
+# subquery = double_menu_if_same_animal_stmt.alias()
+subselect_stmt = sqlalchemy.select([subquery]).where(subquery.c.animal == "Fish")
 utils.execute_stmt(engine, subselect_stmt)
+
+# (5) Group By Statements & Aggregate over Groups:
+# (a) select(func.xyz(<column>)).group_by(<column>)
+# (b) in SQL-Alchemy all Aggregate-function are available under "func"
+# func.count(...)
+# (c) rename/name columns with: <column>.label(new_name)
+print(f"- Group By: 'select(func.xyz(<column>).label('my_aggregated_value')).group_by(<column>)'")
+stmt = sqlalchemy.select([animal_table.c.species, sqlalchemy.func.count(animal_table.c.id).label("count")]).group_by(
+    animal_table.c.species)
+utils.execute_stmt(engine, stmt)
