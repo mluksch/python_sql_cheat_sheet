@@ -17,4 +17,6 @@ pipenv run postgres
 pipenv run sqlalchemy1
 pipenv run sqlalchemy2
 pipenv run sqlalchemy3
+pipenv run sqlalchemy4
+pipenv run sqlalchemy5
 ```

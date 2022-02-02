@@ -1,3 +1,6 @@
+# CORE #
+# not needed
+
 import os
 
 import pandas as pd
@@ -140,4 +143,14 @@ utils.execute_stmt(engine, subselect_stmt)
 print(f"- Group By: 'select(func.xyz(<column>).label('my_aggregated_value')).group_by(<column>)'")
 stmt = sqlalchemy.select([animal_table.c.species, sqlalchemy.func.count(animal_table.c.id).label("count")]).group_by(
     animal_table.c.species)
+utils.execute_stmt(engine, stmt)
+
+# (6) CTE (Common Table Expression) same as SubQueries
+# With my_cte as (<Select-Stmt>)
+# Select ... from my_cte ...
+# my_cte = <Stmt>.cte()
+print(f"- CTE: 'With my_cte as (<Select-Stmt>)")
+my_cte = double_menu_if_same_animal_stmt.cte()
+print(f"my_cte: {my_cte}")
+stmt = sqlalchemy.select([sqlalchemy.func.distinct(my_cte.c.animal).label("Animal")])
 utils.execute_stmt(engine, stmt)

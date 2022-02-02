@@ -10,6 +10,7 @@ sqlalchemy1 = "pipenv run 01_sqlalchemy_transaction.py"
 sqlalchemy2 = "pipenv run 02_sqlalchemy_metadata.py"
 sqlalchemy3 = "03_sqlalchemy_expression_language.py"
 sqlalchemy4 = "04_sqlalchemy_advanced.py"
+sqlalchemy5 = "05_sqlalchemy_orm_features.py"
 
 [packages]
 psycopg2 = "*"

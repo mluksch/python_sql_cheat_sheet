@@ -1,3 +1,6 @@
+# CORE #
+# not needed
+
 import pandas as pd
 import sqlalchemy
 
@@ -49,7 +52,8 @@ print("Creating SQL-Statements with the Table-object:")
 where_clause = sqlalchemy.or_(user_table.c.first_name == "Jerome", user_table.c.last_name == "Beaver")
 print(f"* where_clause: {where_clause}")
 
-# Select-Clause
+# Select-Clause:
+# order_by(<column>)
 select_clause = sqlalchemy.select([user_table.c.first_name, user_table.c.last_name, user_table.c.age]).order_by(
     user_table.c.age)
 print(f"* select_clause: {select_clause}")

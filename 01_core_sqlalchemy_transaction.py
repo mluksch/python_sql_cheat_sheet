@@ -1,3 +1,6 @@
+# CORE #
+# not needed
+
 ################  Read-Tutorials  ################
 # https://www.sqlalchemy.org/library.html#pythonsqlalchemytutorial
 # https://www.sqlalchemy.org/library.html#zetcodetutorial
