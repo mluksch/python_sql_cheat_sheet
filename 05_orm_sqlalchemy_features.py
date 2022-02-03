@@ -247,3 +247,35 @@ with Session() as session:
     print(f"join on relationship: {users}")
 
 utils.print_table(engine, "user")
+
+# Delete rows with ORM:
+with Session() as session:
+    # return number of rows deleted:
+    deleted_count = session.query(User).filter_by(last_name="Crab").delete()
+    print(f"deleted_count: {deleted_count}")
+    session.commit()
+
+with Session() as session:
+    # return number of rows deleted:
+    patrick = session.query(User).filter_by(last_name="Starfish").first()
+    print(f"patrick: {patrick}")
+    # void: returns none
+    session.delete(patrick)
+    print(f"deleted_count: {deleted_count}")
+    session.commit()
+
+# Update rows with ORM:
+with Session() as session:
+    # return number of rows updated:
+    updated_count = session.query(User).filter_by(last_name="Circlepants").update({"first_name": "Mr"})
+    print(f"updated_count: {updated_count}")
+    session.commit()
+
+with Session() as session:
+    # return number of rows updated:
+    circle_pants = session.query(User).filter_by(last_name="Circlepants").one()
+    print(f"circle_pants: {circle_pants}")
+    circle_pants.age = 12345678990
+    session.commit()
+
+utils.print_table(engine, "user")
