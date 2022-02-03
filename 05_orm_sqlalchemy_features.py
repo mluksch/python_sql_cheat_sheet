@@ -113,7 +113,7 @@ class User:
     # define a string representation
     # for logging objects
     def __repr__(self):
-        return f"User({self.id}, {self.first_name}, {self.last_name}, {self.age})"
+        return f"User({self.id}, {self.first_name}, {self.last_name}, {self.age}, addresses: {self.addresses})"
 
 
 # Joining tables in ORM:
@@ -221,3 +221,29 @@ with Session() as session:
 # Difference between filter(...) and filter_by(...)
 # filter accepts *args aka positional arguments
 # filter_by accepts **kwargs aka named arguments
+
+
+# Joins: not really needed
+with Session() as session:
+    # inner join: Users with no addresses will not get fetched here:
+    rows = session.query(User, Address).join(
+        Address
+        # on-clause:
+        # , User.id == Address.user_id
+    ).all()
+    for user, address in rows:
+        user.age = 44
+        print(f"Join - User: {user}")
+        print(f"Join - Address: {address}")
+    # if there is no: session.commit(),
+    # updates on ORM-managed-objects will not get committed to DB
+    # session.commit()
+
+    # Use relationship for joins for most accurate explicit join on columns:
+    users = session.query(User).join(
+        # relationship:
+        User.addresses
+    ).all()
+    print(f"join on relationship: {users}")
+
+utils.print_table(engine, "user")
