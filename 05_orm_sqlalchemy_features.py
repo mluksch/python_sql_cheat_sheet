@@ -210,7 +210,8 @@ with Session() as session:
     # ORM-managed object:
     patrick = session.query(User).filter(User.first_name.in_(["Patrick"])).first()
     print(f"session.query(User) - Patrick ORM based object: {patrick}")
-    print(f"Patrick.addresses: {patrick.addresses}")
+    # accessing one to many field, will lazy evaluate + fetch whole list from DB at time of accessing
+    print(f"Patrick.addresses lazily loaded (1-to-many): {patrick.addresses}")
     # named tuple:
     patrick = session.query(User.first_name, User.age).filter(User.first_name.in_(["Patrick"])).first()
     print(f"session.query(User.first_name, User.age) - Patrick named tuple: {patrick}")
