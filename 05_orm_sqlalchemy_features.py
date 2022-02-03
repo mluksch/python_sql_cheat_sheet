@@ -126,6 +126,8 @@ class Address:
         # Table-Class:
         "User",
         # Field in Table-Class:
+        # back_populates will also change the other table,
+        # if values are changed here such as changing foreign keys here
         back_populates="addresses")
     street = sa.Column(sa.String())
 
