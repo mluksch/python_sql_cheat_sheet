@@ -183,6 +183,7 @@ with Session() as session:
     # if there is no foreign key, we get an empty list:
     print(f"** spongebob.addresses : {spongebob.addresses}")
     # Adding objects to 1-to-many-relationship automatically sets all ids, foreign_keys:
+    # Back_populates will add Address to Address-Table, whenever an address will be added to User
     spongebob.addresses.append(Address(street="Spongy Road 123"))
     spongebob2 = session.query(User).filter(User.first_name.in_(["Spongebob"])).first()
     # no need to add updated object to session once more:
