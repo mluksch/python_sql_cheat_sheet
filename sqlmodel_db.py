@@ -10,7 +10,7 @@ import typing
 class Shop(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     name: str
-    orders: typing.List["Order"] = sqlmodel.Relationship(back_populates="shop")
+    orders: typing.Optional[typing.List["Order"]] = sqlmodel.Relationship(back_populates="shop")
 
 # many-to-many association table between Shop & Customer:
 class Order(sqlmodel.SQLModel, table=True):
@@ -26,11 +26,11 @@ class Product(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     title: str
     price: float
-    orders: typing.List[Order] = sqlmodel.Relationship(back_populates="product")
+    orders: typing.Optional[typing.List[Order]] = sqlmodel.Relationship(back_populates="product")
 
 class Customer(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     first_name: str    
     last_name: str
     age: typing.Optional[int]
-    orders: typing.List[Order] = sqlmodel.Relationship(back_populates="customer")
+    orders: typing.Optional[typing.List[Order]] = sqlmodel.Relationship(back_populates="customer")
