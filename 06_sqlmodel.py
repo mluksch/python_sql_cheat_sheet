@@ -1,8 +1,10 @@
 import sqlmodel
 import sqlmodel_db as db
-import fastapi
 
-engine = sqlmodel.create_engine("sqlite:///shopsystem.db")
+engine: sqlmodel = sqlmodel.create_engine("sqlite:///shopsystem.db")
+
+# create all tables:
+sqlmodel.SQLModel.metadata.create_all(engine)
 
 with sqlmodel.Session(engine) as session:
     # Create:
