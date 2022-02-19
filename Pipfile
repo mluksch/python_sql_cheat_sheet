@@ -11,12 +11,14 @@ sqlalchemy2 = "pipenv run 02_core_sqlalchemy_metadata.py"
 sqlalchemy3 = "pipenv run 03_core_sqlalchemy_expression_language.py"
 sqlalchemy4 = "pipenv run 04_core_sqlalchemy_advanced.py"
 sqlalchemy5 = "pipenv run 05_orm_sqlalchemy_features.py"
+sqlmodel = "pipenv run 06_sqlmodel.py"
 
 [packages]
 psycopg2 = "*"
 pew = "*"
 sqlalchemy = "*"
 pandas = "*"
+sqlmodel = "*"
 
 [dev-packages]
 
