@@ -1,3 +1,4 @@
+import pprint
 import sqlmodel
 import sqlmodel_db as db
 import sqlalchemy
@@ -73,32 +74,94 @@ with sqlmodel.Session(engine) as session:
 
 
 # Read:
+import typing
 with sqlmodel.Session(engine) as session:
-    # (1) Simple Select
+    # (1.a) Simple Select
     # select-statements returning dicts:
-    customer = session.execute(
-        # use sqlalchemy's select to avoid warnings
-        sqlalchemy.select(db.Customer)
-        .order_by(db.Customer.age)
-    ).first()
-    print(f"select-statements returning dicts (Dictionaries): {customer}")
-
-    # select-statements returning custom SQLModel-class 
-    # (Pydantic-Models): scalars()
-    customer = session.execute(
+    customers = session.execute(
         # use sqlalchemy's select to avoid warnings
         sqlalchemy.select(db.Customer)
         .order_by(db.Customer.age)
     ).scalars().first()
-    print(f"select-statements returning custom SQLModel-class (Pydantic-Models): {customer}")
+    print(f"""
+(1.a) Simple Select returning dicts (Dictionaries): 
+> session.execute(...).first():
+> Returns 1 dict wrapped in a sequence:
+> {pprint.pformat(customers)}
+""")
 
-    # (2) limit-statements
+    # select-statements returning custom SQLModel-class
+    # (Pydantic-Models): scalars()
+    # Returns a single object or None
+    customer: typing.Optional[db.Customer] = session.execute(
+        # use sqlalchemy's select to avoid warnings
+        sqlalchemy.select(db.Customer).order_by(db.Customer.age)
+        .limit(1)
+    ).scalars().one_or_none()
+    print(
+        f"""
+(1.b) Simple Select returning custom SQLModel-class (Pydantic-Models): one() + .one_or_none() 
+> session.execute(...).scalars().one_or_none()
+> Returns a single object or None
+> {pprint.pformat(customer)}
+""")
 
-    # (3) where-statements
+    # select with session.execute(...).scalars().first() 
+    # -> Returns a single object or None
+    customer: typing.Optional[db.Customer] = session.execute(
+        sqlalchemy.select(db.Customer)
+    ).scalars().first()
+    print(
+        f"""
+(1.c) select with session.execute(...).scalars().first() 
+> Returns a single object or None:
+> {pprint.pformat(customer)}
+""")
+
+    # (2) limit-statements:
+    # session.execute(...).scalars().all()
+    first_5_purchases = session.execute(
+        sqlalchemy.select(db.Purchase).limit(5)
+    ).scalars().all()
+    print(f"""
+(2) session.execute(...).scalars().all()
+> Returns a list of objects:
+> {pprint.pformat(first_5_purchases)}
+""")
+
+    # (3.a) where-statements with "and_" & "or_"
+    filtered = session.execute(sqlalchemy.select(
+        db.Product).where(
+            sqlalchemy.and_(
+                db.Product.price <= 10,
+                db.Product.title.like("%at%")
+            ))).scalars().all()
+    # where(sqlalchemy.and_(db.Product.price <= 10,db.Product.title.like("%at%")))
+    print(
+        f"""
+(3.a) where-statements:
+> select(...).where(sqlalchemy.and_(db.Product.price <= 10, db.Product.title.like(\"%at%\")))
+> {pprint.pformat(filtered,indent=4)}
+""")
+
+    # (3.b) where-statements with regexp(...)
+    # case-insensitive regex: prepend "(?i)"
+    filtered = session.execute(sqlalchemy.select(
+        db.Product).where(
+        db.Product.title.regexp_match("(?i).*car.*")
+    )).scalars().all()
+    print(
+        f"""
+(3.b) where-statements with regexp(...)
+> select(...).where(db.Product.title.regexp_match(\"(?i).*car.*\"):
+> {pprint.pformat(filtered)}
+""")
 
     # (4) Aggregation with group-statements
 
     # (5) Eager-Fetch
+
+    # (6) Join-statements
 
 # Update:
 with sqlmodel.Session(engine) as session:
