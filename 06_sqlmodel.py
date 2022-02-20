@@ -1,7 +1,9 @@
 import sqlmodel
 import sqlmodel_db as db
+import sqlalchemy
 
-engine: sqlmodel = sqlmodel.create_engine("sqlite:///shopsystem.db")
+engine: sqlmodel = sqlmodel.create_engine(
+    "sqlite:///shopsystem.db", future=True, echo=False)
 
 # create all tables:
 sqlmodel.SQLModel.metadata.drop_all(engine)
@@ -72,8 +74,31 @@ with sqlmodel.Session(engine) as session:
 
 # Read:
 with sqlmodel.Session(engine) as session:
-    customers = sqlmodel.select(db.Customer).order_by(db.Customer.age).scalar().all()
-    print(f"customers: {customers}")
+    # (1) Simple Select
+    # select-statements returning dicts:
+    customer = session.execute(
+        # use sqlalchemy's select to avoid warnings
+        sqlalchemy.select(db.Customer)
+        .order_by(db.Customer.age)
+    ).first()
+    print(f"select-statements returning dicts (Dictionaries): {customer}")
+
+    # select-statements returning custom SQLModel-class 
+    # (Pydantic-Models): scalars()
+    customer = session.execute(
+        # use sqlalchemy's select to avoid warnings
+        sqlalchemy.select(db.Customer)
+        .order_by(db.Customer.age)
+    ).scalars().first()
+    print(f"select-statements returning custom SQLModel-class (Pydantic-Models): {customer}")
+
+    # (2) limit-statements
+
+    # (3) where-statements
+
+    # (4) Aggregation with group-statements
+
+    # (5) Eager-Fetch
 
 # Update:
 with sqlmodel.Session(engine) as session:
