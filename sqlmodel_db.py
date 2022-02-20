@@ -10,27 +10,27 @@ import typing
 class Shop(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     name: str
-    orders: typing.Optional[typing.List["Order"]] = sqlmodel.Relationship(back_populates="shop")
+    purchases: typing.Optional[typing.List["Purchase"]] = sqlmodel.Relationship(back_populates="shop")
 
 # many-to-many association table between Shop & Customer:
-class Order(sqlmodel.SQLModel, table=True):
+class Purchase(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     shop_id: int = sqlmodel.Field(foreign_key="shop.id")
     customer_id: int = sqlmodel.Field(foreign_key="customer.id")
     product_id: int= sqlmodel.Field(foreign_key="product.id")
-    shop: Shop = sqlmodel.Relationship(back_populates="orders")
-    customer: "Customer" = sqlmodel.Relationship(back_populates="orders")
-    product: "Product" = sqlmodel.Relationship(back_populates="orders")
+    shop: Shop = sqlmodel.Relationship(back_populates="purchases")
+    customer: "Customer" = sqlmodel.Relationship(back_populates="purchases")
+    product: "Product" = sqlmodel.Relationship(back_populates="purchases")
 
 class Product(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     title: str
     price: float
-    orders: typing.Optional[typing.List[Order]] = sqlmodel.Relationship(back_populates="product")
+    purchases: typing.Optional[typing.List[Purchase]] = sqlmodel.Relationship(back_populates="product")
 
 class Customer(sqlmodel.SQLModel, table=True):
     id: typing.Optional[int] = sqlmodel.Field(primary_key=True)
     first_name: str    
     last_name: str
     age: typing.Optional[int]
-    orders: typing.Optional[typing.List[Order]] = sqlmodel.Relationship(back_populates="customer")
+    purchases: typing.Optional[typing.List[Purchase]] = sqlmodel.Relationship(back_populates="customer")
