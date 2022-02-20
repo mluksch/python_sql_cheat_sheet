@@ -177,12 +177,22 @@ with sqlmodel.Session(engine) as session:
         ).limit(1)
     ).one()
     print(f"""
+(4) Aggregation with group-statements    
 > Product-ID: <{product_with_top_revenue.id}>, Product-Title: <{product_with_top_revenue.title}>, Product-Revenue: <{product_with_top_revenue.revenue}>    
 > {pprint.pformat(product_with_top_revenue)}
 """)
 
-    # (5) Eager-Fetch: Select product with purchases
-
+    # (5) Lazy-Fetch: Fetch will happen when accessing property from relationship
+    product_tires = session.execute(
+        sqlalchemy.select(
+            db.Product)
+        .where(db.Product.id == 5)
+    ).scalars().one_or_none()
+    print(f"""
+(5) Lazy-Fetch: Fetch will happen when accessing property from relationship:    
+> Product: {pprint.pformat(product_tires)}        
+> Lazy-fetched Purchases: {pprint.pformat(product_tires.purchases)}    
+""")
 
     # (6) Join-statements
 
