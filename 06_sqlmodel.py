@@ -227,8 +227,11 @@ with sqlmodel.Session(engine) as session:
     customer.first_name = "Sam"
     customer.last_name = "Sung"
     customer.age = 31
-    # because of: "cascade": 'delete-orphan' in Customer-Entity
-    # corresponding purchase-entity will also get deleted in Purchase-Table
+    # Take care:
+    # Changing values on foreign Relationships requires special cascade-declarations
+    # in order to be executed on foreign table too!
+    # Because of: "cascade"='delete-orphan' in Customer-Entity
+    # the referenced purchase-entity will also get deleted in Purchase-Table
     customer.purchases = []
     # Commit required for insert + updates:
     session.commit()
