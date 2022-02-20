@@ -1,8 +1,10 @@
-import typing
 import pprint
-import sqlmodel
-import sqlmodel_db as db
+import typing
+
 import sqlalchemy
+import sqlmodel
+
+import sqlmodel_db as db
 
 engine: sqlmodel = sqlmodel.create_engine(
     "sqlite:///shopsystem.db", future=True, echo=False)
@@ -73,7 +75,6 @@ with sqlmodel.Session(engine) as session:
     ])
     session.commit()
 
-
 # Read:
 with sqlmodel.Session(engine) as session:
     # (1.a) Simple Select
@@ -81,7 +82,7 @@ with sqlmodel.Session(engine) as session:
     customers = session.execute(
         # use sqlalchemy's select to avoid warnings
         sqlalchemy.select(db.Customer)
-        .order_by(db.Customer.age)
+            .order_by(db.Customer.age)
     ).scalars().first()
     print(f"""
 (1.a) Simple Select returning dicts (Dictionaries): 
@@ -96,7 +97,7 @@ with sqlmodel.Session(engine) as session:
     customer: typing.Optional[db.Customer] = session.execute(
         # use sqlalchemy's select to avoid warnings
         sqlalchemy.select(db.Customer).order_by(db.Customer.age)
-        .limit(1)
+            .limit(1)
     ).scalars().one_or_none()
     print(
         f"""
@@ -132,16 +133,16 @@ with sqlmodel.Session(engine) as session:
     # (3.a) where-statements with "and_" & "or_"
     filtered = session.execute(sqlalchemy.select(
         db.Product).where(
-            sqlalchemy.and_(
-                db.Product.price <= 10,
-                db.Product.title.like("%at%")
-            ))).scalars().all()
+        sqlalchemy.and_(
+            db.Product.price <= 10,
+            db.Product.title.like("%at%")
+        ))).scalars().all()
     # where(sqlalchemy.and_(db.Product.price <= 10,db.Product.title.like("%at%")))
     print(
         f"""
 (3.a) where-statements:
 > select(...).where(sqlalchemy.and_(db.Product.price <= 10, db.Product.title.like(\"%at%\")))
-> {pprint.pformat(filtered,indent=4)}
+> {pprint.pformat(filtered, indent=4)}
 """)
 
     # (3.b) where-statements with regexp(...)
@@ -186,7 +187,7 @@ with sqlmodel.Session(engine) as session:
     product_tires = session.execute(
         sqlalchemy.select(
             db.Product)
-        .where(db.Product.id == 5)
+            .where(db.Product.id == 5)
     ).scalars().one_or_none()
     print(f"""
 (5) Lazy-Fetch: Fetch will happen when accessing property from relationship:    
@@ -195,11 +196,66 @@ with sqlmodel.Session(engine) as session:
 """)
 
     # (6) Join-statements
+    result: typing.Optional[db.Purchase] = session.execute(sqlalchemy.select(
+        db.Purchase
+    ).join(
+        db.Product
+    ).join(
+        db.Customer
+    ).join(
+        db.Shop
+    ).where(
+        # Multiple where-conditions
+        db.Shop.name.regexp_match("(?i).*fish.*"),
+        db.Customer.first_name.regexp_match("(?i).*a.*"),
+        db.Product.price <= 5
+    ).limit(1)).scalars().first()
+    print(f"""Join-statements: Find Purchase where Shop's name contains "fish" & Customer's name contains "a" & Product's price > 4  
+> result: {pprint.pformat(result)}
+> Shop: {pprint.pformat(result.shop)}, Product: {pprint.pformat(result.product)}, Customer: {pprint.pformat(result.customer)}, 
+""")
+# Output: > result: Purchase(shop_id=3, customer_id=3, id=5, product_id=1)
+# Output: > Shop: Shop(id=3, name="Ben's Fishing Accessoires"), Product: Product(price=3.44, title='Bubble gum', id=1), Customer: Customer(id=3, last_name='Stack', first_name='Jack', age=36),
 
 # Update:
 with sqlmodel.Session(engine) as session:
-    pass
+    customer: typing.Optional[db.Customer] = session.execute(
+        # scalars is important!!!
+        # Otherwise results will not be transformed to SQLModel-Objects!
+        sqlalchemy.select(db.Customer).where(db.Customer.id == 1)).scalars().one()
+
+    customer.first_name = "Sam"
+    customer.last_name = "Sung"
+    customer.age = 31
+    # because of: "cascade": 'delete-orphan' in Customer-Entity
+    # corresponding purchase-entity will also get deleted in Purchase-Table
+    customer.purchases = []
+    # Commit required for insert + updates:
+    session.commit()
+    print(f"""
+Updated Customer    
+> customer after update: {pprint.pformat(customer)}, purchases: {pprint.pformat(customer.purchases)}
+""")
 
 # Delete:
 with sqlmodel.Session(engine) as session:
-    pass
+    customer: typing.Optional[db.Customer] = session.execute(
+        # scalars is important!!!
+        # Otherwise results will not be transformed to SQLModel-Objects!
+        sqlalchemy.select(db.Customer).where(db.Customer.id == 1)).scalars().one()
+    session.delete(customer)
+    # Commit required for insert + updates + deletes:
+    session.commit()
+    print(f"""
+> Executed: session.delete(customer)
+""")
+
+with sqlmodel.Session(engine) as session:
+    customer: typing.Optional[db.Customer] = session.execute(
+        # scalars is important!!!
+        # Otherwise results will not be transformed to SQLModel-Objects!
+        sqlalchemy.select(db.Customer).where(db.Customer.id == 1)).scalars().first()
+    print(f"""
+Check for Deleted Customer:    
+> customer after delete: {pprint.pformat(customer)}
+""")
