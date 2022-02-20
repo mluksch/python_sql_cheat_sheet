@@ -1,3 +1,4 @@
+import typing
 import pprint
 import sqlmodel
 import sqlmodel_db as db
@@ -74,7 +75,6 @@ with sqlmodel.Session(engine) as session:
 
 
 # Read:
-import typing
 with sqlmodel.Session(engine) as session:
     # (1.a) Simple Select
     # select-statements returning dicts:
@@ -106,7 +106,7 @@ with sqlmodel.Session(engine) as session:
 > {pprint.pformat(customer)}
 """)
 
-    # select with session.execute(...).scalars().first() 
+    # select with session.execute(...).scalars().first()
     # -> Returns a single object or None
     customer: typing.Optional[db.Customer] = session.execute(
         sqlalchemy.select(db.Customer)
@@ -158,8 +158,31 @@ with sqlmodel.Session(engine) as session:
 """)
 
     # (4) Aggregation with group-statements
+    product_with_top_revenue = session.execute(
+        sqlalchemy.select(
+            # select all fields from Product-table:
+            db.Product.id,
+            db.Product.title,
+            # aggregate by sum:
+            sqlalchemy.func.sum(db.Product.price).label("revenue")
+        ).join(
+            # join Purchase-table:
+            db.Purchase
+        ).group_by(
+            # group by column from joined-table
+            db.Purchase.product_id
+        ).order_by(
+            # desc order by aggregated sum-value:
+            sqlalchemy.desc("revenue")
+        ).limit(1)
+    ).one()
+    print(f"""
+> Product-ID: <{product_with_top_revenue.id}>, Product-Title: <{product_with_top_revenue.title}>, Product-Revenue: <{product_with_top_revenue.revenue}>    
+> {pprint.pformat(product_with_top_revenue)}
+""")
 
-    # (5) Eager-Fetch
+    # (5) Eager-Fetch: Select product with purchases
+
 
     # (6) Join-statements
 
