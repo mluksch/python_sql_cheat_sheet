@@ -252,6 +252,16 @@ with sqlmodel.Session(engine) as session:
     print(f"""
 > Executed: session.delete(customer)
 """)
+    try:
+        # check for deletion:
+        session.refresh(customer)
+        print(f"""
+Check for Deleted Customer:    
+> customer after delete: {pprint.pformat(customer)}
+""")
+    except Exception as e:
+        print(f"> Expect Not-found-exception after deletion: {pprint.pformat(e)}")
+
 
 with sqlmodel.Session(engine) as session:
     customer: typing.Optional[db.Customer] = session.execute(
